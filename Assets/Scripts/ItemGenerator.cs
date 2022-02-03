@@ -11,9 +11,9 @@ public class ItemGenerator : MonoBehaviour
     //cornPrefabを入れる
     public GameObject conePrefab;
     //スタート地点
-    private int startPos = 35;
+    private int startPos = 80;
     //ゴール地点
-    private int goalPos = 305;
+    private int goalPos = 360;
     //アイテムを出すx方向の範囲
     private float posRange = 3.4f;
 
@@ -36,10 +36,9 @@ public class ItemGenerator : MonoBehaviour
     void Update()
     {
         //一定の距離ごとにアイテムを生成
-        if (unitychan.transform.position.z >=this.startPos && this.goalPos > unitychan.transform.position.z && this.switchpoint == Mathf.Floor(unitychan.transform.position.z))
-            //ユニティちゃんの位置がスタートより先かつゴールより後ろかつスイッチポイントと同じ時
+        if (this.goalPos > switchpoint && unitychan.transform.position.z+this.placementpoint >=  this.switchpoint)
+            //スイッチポイント＋生成視界がゴールより前、スイッチポイントがユニティちゃんの位置＋生成視界内の時
         {
-            this.switchpoint += this.interval;
             //どのアイテムを出すのかをランダムに設定
             int num = Random.Range(1, 11);
             if (num <= 2)
@@ -48,7 +47,7 @@ public class ItemGenerator : MonoBehaviour
                 for (float j = -1; j <= 1; j += 0.4f)
                 {
                     GameObject cone = Instantiate(conePrefab);
-                    cone.transform.position = new Vector3(4 * j, cone.transform.position.y, this.switchpoint+ this.placementpoint);
+                    cone.transform.position = new Vector3(4 * j, cone.transform.position.y, this.switchpoint);
                 }
             }
             else
@@ -66,16 +65,18 @@ public class ItemGenerator : MonoBehaviour
                     {
                         //コインを生成
                         GameObject coin = Instantiate(coinPrefab);
-                        coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, this.switchpoint + this.placementpoint + offsetZ);
+                        coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, this.switchpoint+ offsetZ);
                     }
                     else if (7 <= item && item <= 9)
                     {
                         //車を生成
                         GameObject car = Instantiate(carPrefab);
-                        car.transform.position = new Vector3(posRange * j, car.transform.position.y, this.switchpoint + this.placementpoint + offsetZ);
+                        car.transform.position = new Vector3(posRange * j, car.transform.position.y, this.switchpoint+ offsetZ);
                     }
                 }
             }
+            this.switchpoint += this.interval;
+
         }
     }
 }
